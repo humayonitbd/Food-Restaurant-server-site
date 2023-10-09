@@ -1,73 +1,34 @@
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = process.env.MONGO_URL;
+const uri = process.env.MONGO_URL || "";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+   serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+   },
 });
-let dbConnection;
-module.exports = {
-    connectToServer: function (callback){
-        client.connect(function(err, db){
-            if(err || !db){
-                return callback(err);
-            }
 
-            dbConnection = db.db("DBName");
-            console.log("Successfully connected to mongodb");
-            return callback();
-        });
-    },
+let db;
 
-    getDb: function(){
-        return dbConnection;
-    },
+const connectToServer = async (callback) => {
+   try {
+      dbConnection = await client.connect();
+      db = dbConnection.db("mvcServerDatabase");
+      console.log("database connected Successfully");
+      if (db) {
+         callback();
+      }
+   } catch (e) {
+      callback(err);
+   }
+};
 
-}
+const getDb = () => {
+   return db;
+};
 
+module.exports = { connectToServer, getDb };
 
-
-// const { MongoClient, ServerApiVersion } = require("mongodb");
-
-// let client = null;
-
-// async function connect() {
-//   if (client) {
-//     return client; // Return the existing client if it already exists
-//   }
-
-//   const uri = process.env.MONGO_URL;
-//   client = new MongoClient(uri, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     serverApi: ServerApiVersion.v1,
-//   });
-
-//   try {
-//     const databaseName = 'mvcDatabase'; // Specify the database name you want to connect to.
-// //   const client =  connect(databaseName);
-//     await client.connect(databaseName);
-//     console.log(`Database Connected successfull name:${databaseName} !`);
-//     return client;
-//   } catch (error) {
-//     console.error("Error connecting to the database:", error);
-//     throw error;
-//   }
-// }
-
-
-// function getClient() {
-//   if (!client) {
-//     throw new Error("Database client has not been initialized. Call connect() first.");
-//   }
-
-//   return client;
-// }
-
-// module.exports = {
-//   connect,
-//   getClient,
-// };

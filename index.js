@@ -3,7 +3,6 @@ const cors = require("cors");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const allProductDataRoutes = require("./routes/v1/allProducts.route.js");
 // const jwt = require('jsonwebtoken');
 const verifyJwt = require("./middleware/verifyJwt");
@@ -59,14 +58,11 @@ app.all("*", (req, res)=>{
     res.send("NO Route Found..")
 })
 
-// app.listen(port,()=>{
-//     console.log('your server running port is ', port)
+
+
+// process.on("unhandledRejection", (error)=>{
+//   console.log(error.name, error.message);
+//   app.close(() => {
+//     process.exit(1);
+//   })
 // })
-
-
-process.on("unhandledRejection", (error)=>{
-  console.log(error.name, error.message);
-  app.close(() => {
-    process.exit(1);
-  })
-})
