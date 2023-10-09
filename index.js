@@ -26,18 +26,18 @@ app.use(express.json());
 
 //db connect
 
-connect();
+// connect();
 
-// connectToServer((err)=>{
-//   if(!err){
-//     app.listen(port,()=>{
-//     console.log('your server running port is ', port)
-// })
+connectToServer((err)=>{
+  if(!err){
+    app.listen(port,()=>{
+    console.log('your server running port is ', port)
+})
 
-//   }else{
-//     console.log(err);
-//   }
-// }); 
+  }else{
+    console.log(err);
+  }
+}); 
 
 
 app.use("/api/v1/allProductData", allProductDataRoutes);
@@ -59,9 +59,9 @@ app.all("*", (req, res)=>{
     res.send("NO Route Found..")
 })
 
-app.listen(port,()=>{
-    console.log('your server running port is ', port)
-})
+// app.listen(port,()=>{
+//     console.log('your server running port is ', port)
+// })
 
 
 process.on("unhandledRejection", (error)=>{
