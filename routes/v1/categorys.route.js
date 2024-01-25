@@ -1,11 +1,20 @@
 
 const express = require("express");
-const allProductController = require("../../controllers/allProducts.controller");
+const  categorys  = require("../../controllers/categorys.controller");
 
-const router = express.Router();
+const router  = express.Router();
+
+
+// router.get("/", (req, res)=>{
+//     res.send("allProduct data get id  hoise")
+// })
+
+// router.post("/", (req, res)=>{
+//     res.send("allProduct data post hoise")
+// })
 
 router.route("/")
-  /**
+/**
    * @api {get} /tools All tools
    * @apiDescription Get all the tools
    * @apiPermission admin
@@ -20,8 +29,8 @@ router.route("/")
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
-  .get(allProductController.getCategoryProducts)
-  /**
+.get(categorys.getCategorys)
+/**
    * @api {post} /tools save a tool
    * @apiDescription post all the tools
    * @apiPermission admin
@@ -36,19 +45,11 @@ router.route("/")
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
-  .post(allProductController.postAllProducts);
+// .post(allProductController.postAllProducts);
 
-router.get("/populler", allProductController.getPopullerProduct);
-router.get("/searchData", allProductController.getSearchByProducts);
-
-router.route("/:id")
-  .get(allProductController.getProductsDetails)
-  .delete(allProductController.deleteProduct);
-//   .patch(allProductController.updateProduct);
+// router.route("/:id")
+// .get(allProductController.getProductsDetails)
+// .patch(allProductController.updateProduct)
+// .delete(allProductController.deleteProduct)
 
 module.exports = router;
-
-
-
-
-

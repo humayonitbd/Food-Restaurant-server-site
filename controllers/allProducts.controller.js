@@ -6,7 +6,43 @@ module.exports.getAllProducts = async(req, res)=>{
     try {
       const db = getDb(); 
       // const products = await db.collection("allProductData").find().skip(1).limit(1).toArray();
-      const products = await db.collection("allProductData").find().toArray();
+      const allProducts = await db.collection("allProductsData").find().toArray();
+      res.status(200).json({success: true, data:allProducts})
+    } catch (error) {
+      next(error)
+    }
+}
+
+module.exports.getCategoryProducts = async(req, res)=>{
+    try {
+      const db = getDb(); 
+      const category = req.query.category;
+      // console.log(category);
+      const products = await db.collection("allProductsData").find({ $or: [ { category: category }, { subCategory: category } ] }).toArray();
+      res.status(200).json({success: true, data:products})
+    } catch (error) {
+      next(error)
+    }
+}
+
+module.exports.getSearchByProducts = async (req, res, next) => {
+    try {
+        const db = getDb();
+        const searchText = req.query.searchText;
+        const searchProducts = await db.collection("allProductsData").find({ $or: [{ category: searchText }, { name: searchText }] }).toArray();
+        res.status(200).json({ success: true, data: searchProducts });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+module.exports.getPopullerProduct = async(req, res)=>{
+    try {
+      const db = getDb(); 
+      const populler = req.query.populler;
+      // console.log(category);
+      const products = await db.collection("allProductsData").find({  product: populler  }).toArray();
       res.status(200).json({success: true, data:products})
     } catch (error) {
       next(error)
@@ -18,7 +54,7 @@ module.exports.postAllProducts = async(req, res, next)=>{
     try {
     const db = getDb(); 
     const product = req.body;
-    const result = await db.collection("allProductData").insertOne(product);
+    const result = await db.collection("allProductsData").insertOne(product);
     if(!result.insertedId){
       return res.status(400).send({status:false, error:"something went rong!!"})
     }
@@ -41,7 +77,7 @@ module.exports.getProductsDetails = async(req, res, next)=>{
       if(!ObjectId.isValid(id)){
         return res.status(400).json({success:false, error:"Not a valid Product Id!!"});
       }
-      const singleProduct = await db.collection("allProductData").findOne({_id: new ObjectId(id)})
+      const singleProduct = await db.collection("allProductsData").findOne({_id: new ObjectId(id)})
       if(!singleProduct){
         return res.status(400).json({success:false, error:"Could't find a product with this ID!!"})
       }
@@ -60,7 +96,7 @@ module.exports.deleteProduct = async (req, res)=>{
       if(!ObjectId.isValid(id)){
         return res.status(400).json({success:false, error:"Not a valid Product Id!!"});
       }
-      const singleProduct = await db.collection("allProductData").deleteOne({_id: new ObjectId(id)})
+      const singleProduct = await db.collection("allProductsData").deleteOne({_id: new ObjectId(id)})
       if(!singleProduct.deletedCount){
         return res.status(400).json({success:false, error:"Could't delete the Product!!"})
       }
@@ -72,22 +108,5 @@ module.exports.deleteProduct = async (req, res)=>{
     }
 }
 
-module.exports.updateProduct = async (req, res)=>{
-    try {
-      const db = getDb();
-      const {id} = req.params;
-      if(!ObjectId.isValid(id)){
-        return res.status(400).json({success:false, error:"Not a valid Product Id!!"});
-      }
-      const singleProduct = await db.collection("allProductData").updateOne({_id: new ObjectId(id)}, {$set: req.body})
-      if(!singleProduct.modifiedCount){
-        return res.status(400).json({success:false, error:"Could't update the Product...!"})
-      }
-      res.status(200).json({success:true, message:"successfully updated the Product.."});
 
-
-    } catch (error) {
-      next(error);
-    }
-}
 

@@ -3,11 +3,12 @@ const cors = require("cors");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
-const allProductDataRoutes = require("./routes/v1/allProducts.route.js");
-// const jwt = require('jsonwebtoken');
-const verifyJwt = require("./middleware/verifyJwt");
+const allProductDataRoutes = require("./routes/v1/allProducts.route");
+const categorys = require("./routes/v1/categorys.route.js");
+const allUserRoutes = require("./routes/v1/users.route.js");
 const errorHandler = require("./middleware/errorHandler");
-const {connectToServer, connect} = require("./utils/dbConnect.js")
+const {connectToServer, connect} = require("./utils/dbConnect.js");
+const verifyJwt = require("./middleware/verifyJwt.js");
 
 
 
@@ -20,12 +21,10 @@ app.use(express.json());
 // app.use(verifyJwt);
 
 // route label middleware function call
-// verifyJwt;
+
 
 
 //db connect
-
-// connect();
 
 connectToServer((err)=>{
   if(!err){
@@ -39,7 +38,11 @@ connectToServer((err)=>{
 }); 
 
 
-app.use("/api/v1/allProductData", allProductDataRoutes);
+app.use("/api/v1/allProductsData", allProductDataRoutes);
+app.use("/api/v1/categorys", categorys);
+app.use("/api/v1/users",allUserRoutes);
+// app.use("/api/v1/jwt", allUserRoutes);
+// app.use("/api/v1/orders", allOrderRoutes);
 //others route call here
 
 
@@ -59,10 +62,12 @@ app.all("*", (req, res)=>{
 })
 
 
-
 // process.on("unhandledRejection", (error)=>{
 //   console.log(error.name, error.message);
 //   app.close(() => {
 //     process.exit(1);
 //   })
 // })
+
+
+
